@@ -2,8 +2,7 @@
 name = "holiday-name-swap"
 version = "0.1.0"
 description = "Swaps names for holiday gift exchanges"
-authors = ["klove <klove@oreilly.com>"]
-license = "Apache-2.0"
+authors = [{name = "klove"}]
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115",
