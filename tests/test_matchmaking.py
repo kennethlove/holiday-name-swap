@@ -1,37 +1,19 @@
-import json
-
 import pytest
 
-from src.name_swap import get_givers, pair_givers, find_match
+from src.name_swap import pair_givers
 from src.name_swap.models import Giver
 
 
-def test_convert_to_givers(alice_data, bob_data, charlie_data):
-    players = get_givers(json.dumps([alice_data, bob_data, charlie_data]))
-    assert len(players) == 3
-    assert all(isinstance(player, Giver) for player in players)
-    assert players[0].name == "Alice"
-
-
-def test_convert_to_givers_bad_data(alice_data, bob_data):
-    alice_data["gives_to"] = "Bob"
-
-    with pytest.raises(ValueError):
-        get_givers(json.dumps([alice_data, bob_data]))
-
-
 def test_find_match(alice_data, charlie_data):
-    alice = Giver(**alice_data)
-    charlie = Giver(**charlie_data)
-
-    alice = find_match(alice, [charlie])
+    alice, charlie = pair_givers([Giver(**alice_data), Giver(**charlie_data)])
     assert alice.gives_to == charlie.name
+    assert charlie.gives_to == alice.name
 
 
 def test_find_match_same(alice_data):
     matches = [Giver(**alice_data), Giver(**alice_data)]
     with pytest.raises(ValueError):
-        find_match(matches[0], matches[1:])
+        print(pair_givers(matches))
 
 
 def test_find_matches(alice_data, charlie_data):

@@ -1,5 +1,3 @@
-from typing import Union
-
 from pydantic import (
     BaseModel,
     ValidationInfo,
@@ -26,10 +24,3 @@ class Giver(BaseModel):
         if v == info.data["name"]:
             raise ValueError("gives_to must not be the same as the giver")
         return v
-
-    # @field_validator("gives_to")
-    # @classmethod
-    # def check_gives_to_drawn(cls, v: str, info: ValidationInfo):
-    #     if info.data["drawn"]:
-    #         raise ValueError("gives_to must not be an already drawn giver")
-    #     return v

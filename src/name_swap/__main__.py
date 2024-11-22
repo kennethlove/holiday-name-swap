@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from .models import Giver
-from . import get_givers, pair_givers
+from . import pair_givers
 
 app = FastAPI()
 

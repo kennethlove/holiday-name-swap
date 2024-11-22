@@ -18,4 +18,4 @@ def test_giver_matched_with_self(alice_data):
     try:
         Giver(**giver_data)
     except ValueError as e:
-        assert "gives_to must not be the same as the player" in str(e)
+        assert "gives_to must not be the same as the giver" in str(e)
