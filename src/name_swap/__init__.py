@@ -1,35 +1,35 @@
 import json
 import random
+from typing import List
 
-from src.name_swap.models import Player
+from src.name_swap.models import Giver
 
 
-def get_players(json_blob: str) -> list[Player]:
+def get_givers(json_blob: str) -> list[Giver]:
     """Convert a JSON blob into a list of players."""
-    players = json.loads(json_blob)
-    return [Player(**player_data) for player_data in players]
+    givers = json.loads(json_blob)
+    return [Giver(**giver_data) for giver_data in givers]
 
 
-def find_matches(players: list[Player]) -> list[Player]:
-    """Find matches for a list of players."""
-    available_players = [player for player in players if not player.drawn]
+def pair_givers(givers: list[Giver]) -> list[Giver]:
+    """Find matches for a list of givers."""
     matches = []
-    while available_players:
-        random.shuffle(available_players)
-        lucky_player = available_players.pop(0)
-        matches.append(find_match(lucky_player, available_players))
+    for giver in givers:
+        giver = find_match(giver, givers)
+        matches.append(giver)
     return matches
 
 
-def find_match(player: Player, players: list[Player]) -> Player:
-    """Given a player and a list of players, find a match for the player."""
-    while players:
-        other_player = random.choice(players)
-        players.remove(other_player)
+def find_match(giver: Giver, receivers: list[Giver]) -> Giver:
+    """Given a giver and a list of receivers, find a match for the giver."""
+    while available_receivers := [r for r in receivers if not r.drawn]:
+        receiver = random.choice(available_receivers)
         try:
-            matched_player = Player(**player.model_dump() | {"gives_to": other_player.name, "drawn": True})
+            receiver.drawn = True
+            matched_giver = Giver(**giver.model_dump() | {"gives_to": receiver.name})
         except ValueError:
+            receivers.remove(receiver)
             continue
         else:
-            return matched_player
+            return matched_giver
     raise ValueError("No match found")

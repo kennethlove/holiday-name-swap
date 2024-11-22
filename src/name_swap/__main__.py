@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .models import Player
+from .models import Giver
 
 app = FastAPI()
 
