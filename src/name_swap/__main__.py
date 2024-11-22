@@ -1,5 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from .models import Giver
+from . import get_givers, pair_givers
 
 app = FastAPI()
 
@@ -9,6 +10,10 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+@app.post("/")
+async def supply_givers(request: Request):
+    givers = await request.json()
+    givers = [Giver(**giver_data) for giver_data in givers]
+    return {"givers": pair_givers(givers)}
+
+
