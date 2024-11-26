@@ -1,19 +1,30 @@
 import random
+from copy import deepcopy
 
 from src.name_swap.models import Giver
 
 
 def pair_givers(givers: list[Giver]) -> list[Giver]:
     """Find matches for a list of givers."""
-    matches = []
-    for giver in givers:
-        potential_matches = [givee for givee in givers
-                             if givee.name not in giver.exclusions and
-                             givee != giver and
-                             not givee.drawn]
-        if potential_matches:
-            givee = random.choice(potential_matches)
-            matches.append(Giver(**giver.model_dump() | {"gives_to": givee.name}))
-    if not matches:
-        raise ValueError("No matches found")
-    return matches
+    all_givers = {giver.name: giver for giver in givers}
+
+    for key, giver in all_givers.items():
+        possible_receivers = deepcopy(givers)
+        possible_receivers.remove(giver)
+        random.shuffle(possible_receivers)
+
+        for receiver in possible_receivers:
+            if any([
+                receiver.name in giver.exclusions,
+                giver.name == receiver.name,
+                receiver.gives_to == giver.name,
+                receiver.drawn == True,
+            ]):
+                continue
+            else:
+                all_givers[key].gives_to = receiver.name
+                all_givers[receiver.name].exclusions.append(key)
+                all_givers[receiver.name].drawn = True
+                break
+
+    return list(all_givers.values())
